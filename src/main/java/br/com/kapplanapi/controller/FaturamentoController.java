@@ -46,8 +46,10 @@ import br.com.kapplanapi.models.Fatura;
 import br.com.kapplanapi.models.Fornecedor;
 import br.com.kapplanapi.models.PaymentResponse;
 import br.com.kapplanapi.models.PaymentResponse.results;
+import br.com.kapplanapi.models.Cupom;
 
 import br.com.kapplanapi.repository.ClienteRepository;
+import br.com.kapplanapi.repository.CupomRepository;
 import br.com.kapplanapi.repository.FaturaRepository;
 import br.com.kapplanapi.repository.FornecedorRepository;
 
@@ -65,11 +67,17 @@ import net.sf.jasperreports.repo.InputStreamResource;
 @RequestMapping("v1/")
 public class FaturamentoController {
 
-	@Autowired
-	ClientesController clientesController;
 
 	@Autowired
 	FaturaRepository faturaRepository;
+
+	
+	@Autowired
+	CupomRepository cupomRepository;
+
+	
+	@Autowired
+	ClienteRepository clienteRepository;
 
 	Locale ptBr = new Locale("pt", "BR");
 
@@ -82,6 +90,14 @@ public class FaturamentoController {
 	@CrossOrigin
 	@PostMapping("protected/faturamento/criar")
 	public ResponseEntity criarNovoFaturamento(@RequestBody Fatura fatura) {
+
+
+
+		Cliente cliente_fatura = clienteRepository.findById(fatura.getCliente().getId_cliente()).get();
+		Cupom cupom_fatura = cupomRepository.findById(fatura.getId_fatura()).get();
+
+		fatura.setCupom(cupom_fatura);
+		fatura.setCliente(cliente_fatura);
 
 		fatura.setStatus_fatura(0);
 		fatura.setData_criacao(LocalDateTime.now());
