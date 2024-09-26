@@ -36,7 +36,11 @@ public class Fatura {
 	@JoinColumn(nullable = true, name = "cupom_id", referencedColumnName = "id_cupom")
 	private Cupom cupom;
 
-	private int id_cliente;
+	
+	@OneToOne
+	@JoinColumn(nullable = true, name = "cliente_id", referencedColumnName = "id_cliente")
+	private Cliente cliente;
+
 
 	@Column(nullable = true)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
@@ -72,9 +76,6 @@ public class Fatura {
 	private int fatura_enviada_ao_cliente;
 
 
-	
-	@Transient
-	Cliente cliente;
 
 	
 
