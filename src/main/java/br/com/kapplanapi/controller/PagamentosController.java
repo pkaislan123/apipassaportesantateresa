@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +25,7 @@ import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferencePayerRequest;
+import com.mercadopago.client.preference.PreferencePaymentMethodRequest;
 import com.mercadopago.client.preference.PreferencePaymentMethodsRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.exceptions.MPApiException;
@@ -91,13 +93,15 @@ public class PagamentosController {
 		// referenciaExterna;
 		String referencia = "reference0310_" + fatura.getCliente().getId_cliente();
 
-		
+		List<PreferencePaymentMethodRequest> excludedMethods = new ArrayList<>();
+		excludedMethods.add(PreferencePaymentMethodRequest.builder()
+				.id("account_money") // Use the appropriate ID for "dinheiro em conta"
+				.build());
 
 		PreferencePaymentMethodsRequest paymentMethods = PreferencePaymentMethodsRequest.builder()
 				.excludedPaymentTypes(new ArrayList<>()) // Não excluir nenhum tipo de pagamento
-				.excludedPaymentMethods(new ArrayList<>()) // Não excluir nenhum método de pagamento
+				.excludedPaymentMethods(excludedMethods) // Excluir "dinheiro em conta"
 				.build();
-
 		PreferenceRequest request = PreferenceRequest.builder().items(items).payer(payer)
 				.statementDescriptor("Passaporte Santa Teresa")
 				.paymentMethods(paymentMethods)
@@ -202,14 +206,11 @@ public class PagamentosController {
 
 	}
 
-
-	
 	@CrossOrigin
 	@PostMapping({ "protected/mp/webhock" })
 	public void listarNoticias(@RequestBody String dados) {
-	 
-        System.out.println(dados);
-	}
 
+		System.out.println(dados);
+	}
 
 }
