@@ -89,7 +89,7 @@ public class PagamentosController {
 				.build();
 
 		// referenciaExterna;
-		String referencia = "reference0310_" + fatura.getId_cliente();
+		String referencia = "reference0310_" + fatura.getCliente().getId_cliente();
 
 		
 
