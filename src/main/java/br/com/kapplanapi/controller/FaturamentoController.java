@@ -94,7 +94,7 @@ public class FaturamentoController {
 
 
 		Cliente cliente_fatura = clienteRepository.findById(fatura.getCliente().getId_cliente()).get();
-		Cupom cupom_fatura = cupomRepository.findById(fatura.getId_fatura()).get();
+		Cupom cupom_fatura = cupomRepository.findById(fatura.getCupom().getId_cupom()).get();
 
 		fatura.setCupom(cupom_fatura);
 		fatura.setCliente(cliente_fatura);
