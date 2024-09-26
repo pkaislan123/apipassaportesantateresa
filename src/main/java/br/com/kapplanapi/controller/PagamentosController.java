@@ -48,7 +48,7 @@ public class PagamentosController {
 
 	public Fatura criarUrlPagamento(Fatura fatura) {
 
-		MercadoPagoConfig.setAccessToken("APP_USR-4447456175872936-092519-f6048e61979a7687174e8fbc10e0f94f-12656440");
+		MercadoPagoConfig.setAccessToken("APP_USR-5774823959891304-092616-eaabb8a2d36713d0d79177830bdec3da-12656440");
 		// Cria um objeto de preferência
 		PreferenceClient client = new PreferenceClient();
 
