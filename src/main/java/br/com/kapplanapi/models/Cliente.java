@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,6 +45,7 @@ public class Cliente {
 	@NotBlank
 	@Size(max = 255)
 	@Column(name = "senha")
+	@JsonIgnore
 	private String senha;
 
 	private String email, nome_completo, whatsapp;
