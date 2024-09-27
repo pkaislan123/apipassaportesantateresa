@@ -50,4 +50,8 @@ public class VendaCupom {
     @JoinColumn(nullable = true, name = "pagamento_id", referencedColumnName = "id_pagamento")
     private Pagamento pagamento;
 
+    @OneToOne
+    @JoinColumn(nullable = true, name = "fatura_id", referencedColumnName = "id_fatura")
+    private Fatura fatura;
+
 }

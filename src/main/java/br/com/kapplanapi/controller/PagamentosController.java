@@ -226,6 +226,7 @@ public class PagamentosController {
 								venda.setCodigo_cupom(result);
 								venda.setPagamento(pagamento);
 								venda.setCodigo_cupom(UUID.randomUUID().toString());
+								venda.setFatura(fatura);
 								vendaCupomRepository.save(venda);
 
 							}
