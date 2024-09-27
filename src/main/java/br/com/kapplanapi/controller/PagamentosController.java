@@ -175,7 +175,7 @@ public class PagamentosController {
 
 				System.out.println(target2.toString());
 
-				if (topic.equals("topic=payment")) {
+				if (topic.equals("payment")) {
 					// verificar se ja existe um pagamento com esse id
 					Optional<Pagamento> possivel_pagamento = pagamentoRepository
 							.buscarPorIdPagamentoMercadoPago(id);
