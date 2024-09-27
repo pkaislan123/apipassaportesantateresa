@@ -34,7 +34,6 @@ import com.mercadopago.resources.preference.Preference;
 import br.com.kapplanapi.models.Cliente;
 import br.com.kapplanapi.models.Fatura;
 import br.com.kapplanapi.models.PaymentResponse;
-import br.com.kapplanapi.models.PaymentResponse.results;
 import br.com.kapplanapi.repository.ClienteRepository;
 import br.com.kapplanapi.repository.PagamentoRepository;
 import okhttp3.OkHttpClient;
@@ -170,7 +169,7 @@ public class PagamentosController {
 					if (possivel_pagamento.isPresent()) {
 						Pagamento pagamento = possivel_pagamento.get();
 						pagamento.setPayment_id(id);
-						
+
 
 
 					} else {
@@ -196,37 +195,7 @@ public class PagamentosController {
 
 	}
 
-	public results buscarInfoPagamento(String reference, String token) {
 
-		OkHttpClient client = new OkHttpClient();
-		Request request = new Request.Builder()
-				.url("https://api.mercadopago.com/v1/payments/search?sort=date_created&criteria=desc&external_reference="
-						+ reference)
-				.get()
-				.addHeader("Authorization", "Bearer " + token)
-				.build();
-
-		try {
-			Response response = client.newCall(request).execute();
-			String result = response.body().string();
-			Gson gson = new Gson(); // Or use new GsonBuilder().create();
-			PaymentResponse target2 = gson.fromJson(result, PaymentResponse.class);
-
-			return target2.getResults().get(0);
-
-		} catch (SocketTimeoutException f) {
-			// TODO Auto-generated catch block
-			System.out.println("Sem Conexão com a internet!");
-
-			return null;
-
-		} catch (Exception e) {
-
-			return null;
-
-		}
-
-	}
 
 	@CrossOrigin
 	@PostMapping({ "protected/mp/webhock" })
