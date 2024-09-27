@@ -93,6 +93,8 @@ public class Fornecedor   {
 			private String latitude, longitude;
 			
 			private String site;
+			private String instagram, link_mapa;
+			private String links;
 			private String roles;
 
 
