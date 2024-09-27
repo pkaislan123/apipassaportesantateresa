@@ -169,8 +169,8 @@ public class PagamentosController {
 
 					if (possivel_pagamento.isPresent()) {
 						Pagamento pagamento = possivel_pagamento.get();
-						pagamento.setPayment_status(target2.getResults().get(0).getStatus());
 						pagamento.setPayment_id(id);
+						
 
 
 					} else {
