@@ -45,7 +45,6 @@ import br.com.kapplanapi.models.Cliente;
 import br.com.kapplanapi.models.Fatura;
 import br.com.kapplanapi.models.Fornecedor;
 import br.com.kapplanapi.models.PaymentResponse;
-import br.com.kapplanapi.models.PaymentResponse.results;
 import br.com.kapplanapi.models.Cupom;
 
 import br.com.kapplanapi.repository.ClienteRepository;
