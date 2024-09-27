@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.common.IdentificationRequest;
@@ -37,6 +38,10 @@ import br.com.kapplanapi.repository.ClienteRepository;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import br.com.kapplanapi.models.PaymentUpdate;
+
+
 
 @CrossOrigin
 @RestController
@@ -210,6 +215,37 @@ public class PagamentosController {
 	public void webhockPagamentos(@RequestBody String dados) {
 	 
         System.out.println(dados);
+
+
+		 ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            // Desserializa o JSON na classe PaymentUpdate
+            PaymentUpdate paymentUpdate = objectMapper.readValue(dados, PaymentUpdate.class);
+
+            // Agora você pode acessar os valores em variáveis separadas
+            String action = paymentUpdate.getAction();
+            String apiVersion = paymentUpdate.getApiVersion();
+            String dataId = paymentUpdate.getData().getId();
+            String dateCreated = paymentUpdate.getDateCreated();
+            long id = paymentUpdate.getId();
+            boolean liveMode = paymentUpdate.isLiveMode();
+            String type = paymentUpdate.getType();
+            String userId = paymentUpdate.getUserId();
+
+            // Exemplo de saída
+            System.out.println("Action: " + action);
+            System.out.println("API Version: " + apiVersion);
+            System.out.println("Data ID: " + dataId);
+            System.out.println("Date Created: " + dateCreated);
+            System.out.println("ID: " + id);
+            System.out.println("Live Mode: " + liveMode);
+            System.out.println("Type: " + type);
+            System.out.println("User ID: " + userId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 
