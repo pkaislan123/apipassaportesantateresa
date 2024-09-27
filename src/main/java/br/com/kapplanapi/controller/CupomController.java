@@ -71,6 +71,7 @@ public class CupomController {
 	@PostMapping("protected/cupons/categorias/cadastrar")
 	public CategoriaCupom cadastrarCategoria(@RequestBody CategoriaCupom categoria)
 	{
+		categoria.setData_cadastro(LocalDateTime.now());
 		return categoriaCupomRepository.save(categoria);
 	}
 
