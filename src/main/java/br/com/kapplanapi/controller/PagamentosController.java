@@ -86,6 +86,7 @@ public class PagamentosController {
 				.success("https://localhost:3000/faturamento")
 				.pending("https://www.seu-site/pending")
 				.failure("https://www.seu-site/failure")
+				
 				.build();
 
 		// referenciaExterna;
@@ -206,7 +207,7 @@ public class PagamentosController {
 	
 	@CrossOrigin
 	@PostMapping({ "protected/mp/webhock" })
-	public void listarNoticias(@RequestBody String dados) {
+	public void webhockPagamentos(@RequestBody String dados) {
 	 
         System.out.println(dados);
 	}
