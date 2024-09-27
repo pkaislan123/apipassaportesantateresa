@@ -44,6 +44,9 @@ public class CategoriaCupom {
 	private String descricao;
 
    
-	
+		// 1 ativo
+	// 0 bloqueado
+	@Column(columnDefinition = "integer default 1")
+	private int obrigatorio;
     
 }
