@@ -32,10 +32,15 @@ import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
 import br.com.kapplanapi.models.Cliente;
+import br.com.kapplanapi.models.VendaCupom;
 import br.com.kapplanapi.models.Fatura;
 import br.com.kapplanapi.models.PaymentResponse;
 import br.com.kapplanapi.repository.ClienteRepository;
 import br.com.kapplanapi.repository.PagamentoRepository;
+import br.com.kapplanapi.repository.FaturaRepository;
+import br.com.kapplanapi.repository.VendaCupomRepository;
+import java.util.UUID;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -53,6 +58,15 @@ public class PagamentosController {
 
 	@Autowired
 	PagamentoRepository pagamentoRepository;
+
+	@Autowired
+	FaturaRepository faturaRepository;
+
+	
+	@Autowired
+	VendaCupomRepository vendaCupomRepository;
+
+	
 
 	public Fatura criarUrlPagamento(Fatura fatura) {
 
@@ -91,9 +105,9 @@ public class PagamentosController {
 
 		// url que o usuario sera redireciado ao conclir o pagamento
 		PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-				.success("https://localhost:3000/faturamento")
-				.pending("https://www.seu-site/pending")
-				.failure("https://www.seu-site/failure")
+				.success("https://passaporte-chi.vercel.app/meus-cupons")
+				.pending("https://passaporte-chi.vercel.app/meus-cupons")
+				.failure("https://passaporte-chi.vercel.app/meus-cupons")
 
 				.build();
 
@@ -168,14 +182,57 @@ public class PagamentosController {
 
 					if (possivel_pagamento.isPresent()) {
 						Pagamento pagamento = possivel_pagamento.get();
-						pagamento.setPayment_id(id);
+						pagamento.setPayment_status(target2.getStatus());
+						pagamento.setPayment_method_id(target2.getPayment_method_id());
+						pagamento.setPayment_status_detail(target2.getStatus_detail());
+						pagamento.setExternal_reference(target2.getExternal_reference());
+						pagamento.setPayment_type_id(target2.getPayment_type_id());
 
-
+						pagamentoRepository.save(pagamento);
 
 					} else {
-						Pagamento novoPagamento = new Pagamento();
+						Pagamento pagamento = possivel_pagamento.get();
+						pagamento.setPayment_id(id);
+						pagamento.setPayment_status(target2.getStatus());
+						pagamento.setPayment_method_id(target2.getPayment_method_id());
+						pagamento.setPayment_status_detail(target2.getStatus_detail());
+						pagamento.setExternal_reference(target2.getExternal_reference());
+						pagamento.setPayment_type_id(target2.getPayment_type_id());
 
-						pagamentoRepository.save(novoPagamento);
+						pagamento = pagamentoRepository.saveAndFlush(pagamento);
+
+						// criar a venda do cupom
+						// primeiro achar a fatura pelo external reference
+						Optional<Fatura> possivel_fatura = faturaRepository
+								.buscarPorExternalReference(target2.getExternal_reference());
+
+						if (possivel_fatura.isPresent()) {
+							Fatura fatura = possivel_fatura.get();
+
+							if(target2.getStatus().equals("approved")){
+								//aprovado
+								fatura.setStatus_fatura(1);
+								fatura.setData_pagamento(LocalDateTime.now());
+
+								fatura = faturaRepository.saveAndFlush(fatura);
+
+								//criar a VendaCupom
+								VendaCupom venda = new VendaCupom();
+								venda.setData_cadastro(LocalDateTime.now());
+								venda.setData_pagamento(LocalDateTime.now());
+								venda.setId_cliente(fatura.getCliente().getId_cliente());
+								venda.setData_validade( LocalDateTime.now().plusDays( fatura.getCupom().getValidade() ));
+								venda.setStatus(1);
+								venda.setCodigo_cupom(result);
+								venda.setPagamento(pagamento);
+								venda.setCodigo_cupom(UUID.randomUUID().toString());
+								vendaCupomRepository.save(venda);
+
+							}
+						
+
+						}
+
 					}
 				}
 
@@ -194,8 +251,6 @@ public class PagamentosController {
 		}
 
 	}
-
-
 
 	@CrossOrigin
 	@PostMapping({ "protected/mp/webhock" })

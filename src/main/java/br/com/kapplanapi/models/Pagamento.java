@@ -34,6 +34,11 @@ public class Pagamento {
     private String payment_id;
     private String payment_status;
     private String merchant_order_id;
+    private String payment_method_id;
+    private String payment_type_id;
+    private String payment_status_detail;
+    private String external_reference;
+
 
     
 
