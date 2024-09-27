@@ -13,7 +13,7 @@ import br.com.kapplanapi.models.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 	  Optional<User> findByLogin(String paramString);
 
-	  @Query(value = "select * from usuarios where id_usuario = ? ", nativeQuery = true)
+	  @Query(value = "select * from usuario where id_usuario = ? ", nativeQuery = true)
 	  Optional<User> findByIdUsuario(int id);
 	 
 
