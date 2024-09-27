@@ -192,7 +192,7 @@ public class PagamentosController {
 
 					} else {
 						System.out.println("Novo pagamento a ser salvo!");
-						Pagamento pagamento = possivel_pagamento.get();
+						Pagamento pagamento = new Pagamento();
 						pagamento.setPayment_id(id);
 						pagamento.setPayment_status(target2.getStatus());
 						pagamento.setPayment_method_id(target2.getPayment_method_id());
