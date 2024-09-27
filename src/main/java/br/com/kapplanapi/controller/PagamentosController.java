@@ -112,7 +112,7 @@ public class PagamentosController {
 				.build();
 
 		// referenciaExterna;
-		String referencia = "reference0310_" + fatura.getCliente().getId_cliente();
+		String referencia = "reference" + fatura.getCliente().getId_cliente() + "" + LocalDateTime.now();
 
 		PreferencePaymentMethodsRequest paymentMethods = PreferencePaymentMethodsRequest.builder()
 				.excludedPaymentTypes(new ArrayList<>()) // Não excluir nenhum tipo de pagamento
@@ -191,6 +191,7 @@ public class PagamentosController {
 						pagamentoRepository.save(pagamento);
 
 					} else {
+						System.out.println("Novo pagamento a ser salvo!");
 						Pagamento pagamento = possivel_pagamento.get();
 						pagamento.setPayment_id(id);
 						pagamento.setPayment_status(target2.getStatus());
@@ -207,6 +208,8 @@ public class PagamentosController {
 								.buscarPorExternalReference(target2.getExternal_reference());
 
 						if (possivel_fatura.isPresent()) {
+							System.out.println("A fatura existe");
+
 							Fatura fatura = possivel_fatura.get();
 
 							if(target2.getStatus().equals("approved")){
@@ -228,6 +231,9 @@ public class PagamentosController {
 								venda.setCodigo_cupom(UUID.randomUUID().toString());
 								venda.setFatura(fatura);
 								vendaCupomRepository.save(venda);
+
+								System.out.println("Venda criada");
+
 
 							}
 						

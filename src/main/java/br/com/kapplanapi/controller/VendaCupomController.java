@@ -73,7 +73,7 @@ public class VendaCupomController {
 	
 
 	@CrossOrigin
-	@PostMapping("protected/vendacupom/listarpodcliente/{id_cliente}")
+	@GetMapping("protected/vendacupom/listarpodcliente/{id_cliente}")
 	public List<VendaCupom>  listarVendaCuponsPorCliente(@PathVariable int id_cliente) {
         return vendaCupomRepository.buscarPorCliente(id_cliente);
 	}
