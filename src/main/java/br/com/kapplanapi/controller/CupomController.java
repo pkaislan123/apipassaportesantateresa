@@ -61,6 +61,7 @@ public class CupomController {
 	}
 
 
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@GetMapping("protected/cupons/categorias/listartodas")
 	public List<CategoriaCupom> buscarTodasAsCategoriasCupons()
 	{
@@ -68,6 +69,7 @@ public class CupomController {
 
 	}
 
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping("protected/cupons/categorias/cadastrar")
 	public CategoriaCupom cadastrarCategoria(@RequestBody CategoriaCupom categoria)
 	{

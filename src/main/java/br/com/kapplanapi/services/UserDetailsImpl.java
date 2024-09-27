@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -139,9 +140,13 @@ public class UserDetailsImpl implements UserDetails {
 
 
 
+	
+
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Aqui, você pode dividir as roles em uma lista e criar um GrantedAuthority para cada uma
+        return Arrays.stream(roles.split(",")) // Supondo que as roles sejam separadas por vírgula
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+    }
 }
