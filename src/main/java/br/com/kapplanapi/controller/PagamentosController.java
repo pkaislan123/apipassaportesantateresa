@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,13 +36,13 @@ import br.com.kapplanapi.models.Fatura;
 import br.com.kapplanapi.models.PaymentResponse;
 import br.com.kapplanapi.models.PaymentResponse.results;
 import br.com.kapplanapi.repository.ClienteRepository;
+import br.com.kapplanapi.repository.PagamentoRepository;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.kapplanapi.models.PaymentUpdate;
-
-
+import br.com.kapplanapi.models.Pagamento;
 
 @CrossOrigin
 @RestController
@@ -50,6 +51,9 @@ public class PagamentosController {
 
 	@Autowired
 	ClienteRepository clienteRepository;
+
+	@Autowired
+	PagamentoRepository pagamentoRepository;
 
 	public Fatura criarUrlPagamento(Fatura fatura) {
 
@@ -91,13 +95,11 @@ public class PagamentosController {
 				.success("https://localhost:3000/faturamento")
 				.pending("https://www.seu-site/pending")
 				.failure("https://www.seu-site/failure")
-				
+
 				.build();
 
 		// referenciaExterna;
 		String referencia = "reference0310_" + fatura.getCliente().getId_cliente();
-
-		
 
 		PreferencePaymentMethodsRequest paymentMethods = PreferencePaymentMethodsRequest.builder()
 				.excludedPaymentTypes(new ArrayList<>()) // Não excluir nenhum tipo de pagamento
@@ -149,7 +151,7 @@ public class PagamentosController {
 					.url("https://api.mercadopago.com/v1/payments/" + id)
 					.get()
 					.addHeader("Authorization",
-							"Bearer APP_USR-4447456175872936-092519-f6048e61979a7687174e8fbc10e0f94f-12656440")
+							"Bearer APP_USR-5774823959891304-092616-eaabb8a2d36713d0d79177830bdec3da-12656440")
 					.build();
 
 			try {
@@ -159,6 +161,24 @@ public class PagamentosController {
 				PaymentResponse target2 = gson.fromJson(result, PaymentResponse.class);
 
 				System.out.println(target2.toString());
+
+				if (topic.equals("topic=payment")) {
+					// verificar se ja existe um pagamento com esse id
+					Optional<Pagamento> possivel_pagamento = pagamentoRepository
+							.buscarPorIdPagamentoMercadoPago(id);
+
+					if (possivel_pagamento.isPresent()) {
+						Pagamento pagamento = possivel_pagamento.get();
+						pagamento.setPayment_status(target2.getResults().get(0).getStatus());
+						pagamento.setPayment_id(id);
+
+
+					} else {
+						Pagamento novoPagamento = new Pagamento();
+
+						pagamentoRepository.save(novoPagamento);
+					}
+				}
 
 			} catch (SocketTimeoutException f) {
 				// TODO Auto-generated catch block
@@ -208,45 +228,41 @@ public class PagamentosController {
 
 	}
 
-
-	
 	@CrossOrigin
 	@PostMapping({ "protected/mp/webhock" })
 	public void webhockPagamentos(@RequestBody String dados) {
-	 
-        System.out.println(dados);
 
+		System.out.println(dados);
 
-		 ObjectMapper objectMapper = new ObjectMapper();
+		ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            // Desserializa o JSON na classe PaymentUpdate
-            PaymentUpdate paymentUpdate = objectMapper.readValue(dados, PaymentUpdate.class);
+		try {
+			// Desserializa o JSON na classe PaymentUpdate
+			PaymentUpdate paymentUpdate = objectMapper.readValue(dados, PaymentUpdate.class);
 
-            // Agora você pode acessar os valores em variáveis separadas
-            String action = paymentUpdate.getAction();
-            String apiVersion = paymentUpdate.getApiVersion();
-            String dataId = paymentUpdate.getData().getId();
-            String dateCreated = paymentUpdate.getDateCreated();
-            long id = paymentUpdate.getId();
-            boolean liveMode = paymentUpdate.isLiveMode();
-            String type = paymentUpdate.getType();
-            String userId = paymentUpdate.getUserId();
+			// Agora você pode acessar os valores em variáveis separadas
+			String action = paymentUpdate.getAction();
+			String apiVersion = paymentUpdate.getApiVersion();
+			String dataId = paymentUpdate.getData().getId();
+			String dateCreated = paymentUpdate.getDateCreated();
+			long id = paymentUpdate.getId();
+			boolean liveMode = paymentUpdate.isLiveMode();
+			String type = paymentUpdate.getType();
+			String userId = paymentUpdate.getUserId();
 
-            // Exemplo de saída
-            System.out.println("Action: " + action);
-            System.out.println("API Version: " + apiVersion);
-            System.out.println("Data ID: " + dataId);
-            System.out.println("Date Created: " + dateCreated);
-            System.out.println("ID: " + id);
-            System.out.println("Live Mode: " + liveMode);
-            System.out.println("Type: " + type);
-            System.out.println("User ID: " + userId);
+			// Exemplo de saída
+			System.out.println("Action: " + action);
+			System.out.println("API Version: " + apiVersion);
+			System.out.println("Data ID: " + dataId);
+			System.out.println("Date Created: " + dateCreated);
+			System.out.println("ID: " + id);
+			System.out.println("Live Mode: " + liveMode);
+			System.out.println("Type: " + type);
+			System.out.println("User ID: " + userId);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
 
 }
