@@ -31,8 +31,10 @@ import com.google.gson.Gson;
 
 import br.com.kapplanapi.models.Cupom;
 
+import br.com.kapplanapi.models.CategoriaCupom;
 
 import br.com.kapplanapi.repository.CupomRepository;
+import br.com.kapplanapi.repository.CategoriaCupomRepository;
 
 import br.com.kapplanapi.utils.ClienteDadosReponse;
 import br.com.kapplanapi.utils.MessageResponse;
@@ -48,13 +50,28 @@ public class CupomController {
 	@Autowired
     CupomRepository cupomRepository;
 
-	
+	@Autowired
+    CategoriaCupomRepository categoriaCupomRepository;
 
 	@GetMapping("protected/cupons/listar")
 	public List<Cupom> searchAll()
 	{
 		return cupomRepository.findAll();
 
+	}
+
+
+	@GetMapping("protected/cupons/categorias/listartodas")
+	public List<CategoriaCupom> buscarTodasAsCategoriasCupons()
+	{
+		return categoriaCupomRepository.findAll();
+
+	}
+
+	@PostMapping("protected/cupons/categorias/cadastrar")
+	public CategoriaCupom cadastrarCategoria(@RequestBody CategoriaCupom categoria)
+	{
+		return categoriaCupomRepository.save(categoria);
 	}
 
 	

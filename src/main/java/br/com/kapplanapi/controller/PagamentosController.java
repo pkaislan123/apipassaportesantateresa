@@ -224,7 +224,7 @@ public class PagamentosController {
 								venda.setData_cadastro(LocalDateTime.now());
 								venda.setData_pagamento(LocalDateTime.now());
 								venda.setId_cliente(fatura.getCliente().getId_cliente());
-								venda.setData_validade( LocalDateTime.now().plusDays( fatura.getCupom().getValidade() ));
+								venda.setData_validade( LocalDateTime.now().plusHours( fatura.getCupom().getValidade() ));
 								venda.setStatus(1);
 								venda.setCodigo_cupom(result);
 								venda.setPagamento(pagamento);
